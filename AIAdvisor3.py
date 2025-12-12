@@ -15,25 +15,25 @@ from sklearn.metrics import classification_report, mean_squared_error, r2_score
 from PIL import Image
 import io
 
-# Suppress TensorFlow oneDNN warnings
+
 os.environ["TF_ENABLE_ONEDNN_OPTS"] = "0"
 
-# Set Streamlit page configuration
+
 st.set_page_config(page_title="AI-Driven Smart Agriculture Advisor", layout="wide")
 
-# Custom loss function for LSTM model
+
 @register_keras_serializable()
 def mse(y_true, y_pred):
     return tf.keras.losses.mean_squared_error(y_true, y_pred)
 
-# Load LSTM model with caching
+
 @st.cache_resource
 def load_lstm_model():
     try:
         model = tf.keras.models.load_model("lstm_model_fixed.h5", custom_objects={"mse": mse}, compile=False)
         return model
     except Exception as e:
-        st.error(f"⚠️ Error loading LSTM model: {e}")
+        st.error(f" Error loading LSTM model: {e}")
         return None
 
 # Load and preprocess dataset
@@ -134,28 +134,28 @@ def recommend_climate_resilient_crops(future_rainfall):
 
 # Main application function
 def main():
-    st.title("🌾 AI-Driven Smart Agriculture Advisor")
+    st.title(" AI-Driven Smart Agriculture Advisor")
 
     # Sidebar navigation
     st.sidebar.header("Navigation")
     selected_page = st.sidebar.radio("Select Analysis Section", [
-        "📊 Model Performance",
-        "📈 Price Forecasts",
-        "🤖 LSTM Predictions",
-        "🌾 Optimal Crop Selection",
-        "📉 XGBoost Predictions",
-        "💧 Irrigation Recommendation",
-        "🌱 Best Crop Prediction",
-        "📸 Pest & Disease Scanner",
-        "💧 Smart Irrigation",
-        "🎲 Profit Simulator",
-        "🌐 Community Insights",
-        "🌍 Climate Planner"
+        " Model Performance",
+        " Price Forecasts",
+        " LSTM Predictions",
+        " Optimal Crop Selection",
+        " XGBoost Predictions",
+        "Irrigation Recommendation",
+        " Best Crop Prediction",
+        " Pest & Disease Scanner",
+        "Smart Irrigation",
+        "Profit Simulator",
+        "Community Insights",
+        "Climate Planner"
     ])
 
     # **Model Performance Section**
-    if selected_page == "📊 Model Performance":
-        st.subheader("📊 Model Performance")
+    if selected_page == " Model Performance":
+        st.subheader(" Model Performance")
         test_size = int(0.2 * len(df))
         df_train, df_test = df[:-test_size], df[-test_size:]
 
@@ -165,8 +165,8 @@ def main():
         rmse_price = mean_squared_error(y_true_price, y_pred_price, squared=False)
         r2_price = r2_score(y_true_price, y_pred_price)
 
-        st.metric("💰 Price Prediction RMSE", f"{rmse_price:.2f}", "Lower is better")
-        st.metric("📊 R² Score (Price Model)", f"{r2_price:.2f}", "Closer to 1 is better")
+        st.metric(" Price Prediction RMSE", f"{rmse_price:.2f}", "Lower is better")
+        st.metric(" R² Score (Price Model)", f"{r2_price:.2f}", "Closer to 1 is better")
 
         # Scatter plot for actual vs predicted prices
         fig, ax = plt.subplots(figsize=(8, 6))
@@ -180,8 +180,8 @@ def main():
         st.pyplot(fig)
 
     # **Price Forecasts Section**
-    elif selected_page == "📈 Price Forecasts":
-        st.subheader("📈 Price Forecasts")
+    elif selected_page == " Price Forecasts":
+        st.subheader(" Price Forecasts")
         crop = st.selectbox("Select Crop", label_encoders["crops"].classes_)
         location = st.selectbox("Select Location", label_encoders["location"].classes_)
         season = st.selectbox("Select Season", label_encoders["season"].classes_)
@@ -228,13 +228,13 @@ def main():
 
         if lstm_model:
             predicted_price = lstm_model.predict(input_features)[0][0]
-            st.success(f"📈 Predicted Crop Price: ₹{predicted_price:.2f}")
+            st.success(f" Predicted Crop Price: ₹{predicted_price:.2f}")
         else:
-            st.warning("⚠️ LSTM model not available. Please check the model file.")
+            st.warning(" LSTM model not available. Please check the model file.")
 
     # **Optimal Crop Selection Section**
-    elif selected_page == "🌾 Optimal Crop Selection":
-        st.subheader("🌾 Optimal Crop Selection")
+    elif selected_page == "Optimal Crop Selection":
+        st.subheader(" Optimal Crop Selection")
         rainfall = st.slider("Rainfall (mm)", 50, 500, 200)
         temperature = st.slider("Temperature (°C)", 10, 40, 25)
         soil_type = st.selectbox("Soil Type", label_encoders["soil_type"].classes_)
@@ -259,8 +259,8 @@ def main():
             st.write(f"{crop}: {prob:.2f}")
 
     # **XGBoost Predictions Section**
-    elif selected_page == "📉 XGBoost Predictions":
-        st.subheader("📉 Predict Crop Yield and Price Using XGBoost")
+    elif selected_page == "XGBoost Predictions":
+        st.subheader("Predict Crop Yield and Price Using XGBoost")
         rainfall = st.slider("Rainfall (mm)", 0, 500, 200)
         temperature = st.slider("Temperature (°C)", 5, 50, 25)
         soil_type = st.selectbox("Select Soil Type", label_encoders["soil_type"].classes_)
@@ -285,13 +285,13 @@ def main():
         predicted_price = ml_models["price"].predict(price_features)[0]
 
         revenue = predicted_yield * predicted_price
-        st.success(f"🌾 Predicted Crop Yield: {predicted_yield:.2f} units")
-        st.success(f"💰 Predicted Crop Price: ₹{predicted_price:.2f}")
-        st.success(f"💵 Potential Revenue: ₹{revenue:.2f}")
+        st.success(f"Predicted Crop Yield: {predicted_yield:.2f} units")
+        st.success(f"Predicted Crop Price: ₹{predicted_price:.2f}")
+        st.success(f"Potential Revenue: ₹{revenue:.2f}")
 
     # **Irrigation Recommendation Section**
-    elif selected_page == "💧 Irrigation Recommendation":
-        st.subheader("💧 Predict Irrigation Type")
+    elif selected_page == "Irrigation Recommendation":
+        st.subheader("Predict Irrigation Type")
         selected_crop = st.selectbox("Select Crop", label_encoders["crops"].classes_)
         soil_type = st.selectbox("Select Soil Type", label_encoders["soil_type"].classes_)
         rainfall = st.slider("Rainfall (mm)", 0, 500, 200)
@@ -311,8 +311,8 @@ def main():
             st.write(f"{irr}: {prob:.2f}")
 
     # **Best Crop Prediction Section**
-    elif selected_page == "🌱 Best Crop Prediction":
-        st.subheader("🌱 Best Crop Prediction")
+    elif selected_page == "Best Crop Prediction":
+        st.subheader("Best Crop Prediction")
         st.write("Select a future season, soil type, and location to find the best crops based on predicted yield.")
 
         # User inputs
@@ -369,8 +369,8 @@ def main():
                 st.write(f"- **{crop}**: Predicted Yield = {yield_pred:.2f} units")
 
     # **Pest & Disease Scanner Section**
-    elif selected_page == "📸 Pest & Disease Scanner":
-        st.subheader("📸 Pest & Disease Scanner")
+    elif selected_page == "Pest & Disease Scanner":
+        st.subheader("Pest & Disease Scanner")
         st.write("Upload an image of your crop to detect pests or diseases.")
 
         uploaded_file = st.file_uploader("Choose an image...", type=["jpg", "jpeg", "png"])
@@ -391,8 +391,8 @@ def main():
             st.info(f"Recommendation: {recommendation}")
 
     # **Smart Irrigation Section**
-    elif selected_page == "💧 Smart Irrigation":
-        st.subheader("💧 Smart Irrigation")
+    elif selected_page == "Smart Irrigation":
+        st.subheader("Smart Irrigation")
         st.write("Get real-time irrigation recommendations based on simulated IoT data.")
 
         soil_moisture, temperature, humidity = get_iot_data()
@@ -403,38 +403,7 @@ def main():
 
     # **Profit Simulator Section**
     elif selected_page == "🎲 Profit Simulator":
-        # st.subheader("🎲 Profit Simulator")
-        # st.write("Simulate potential profits based on different scenarios.")
-
-        # crop = st.selectbox("Select Crop", label_encoders["crops"].classes_)
-        # area = st.slider("Area (hectares)", 1, 100, 10)
-        # investment = st.slider("Investment (₹)", 1000, 100000, 10000)
-
-        # crop_encoded = label_encoders["crops"].transform([crop])[0]
-        # location_encoded = label_encoders["location"].transform([label_encoders["location"].classes_[0]])[0]  # Default to first location
-        # season_encoded = label_encoders["season"].transform([label_encoders["season"].classes_[0]])[0]  # Default to first season
-        # avg_rainfall = df["rainfall"].mean()
-        # avg_temperature = df["temperature"].mean()
-        # avg_humidity = df["humidity"].mean()
-        # most_common_irrigation = df["irrigation"].mode()[0]
-
-        # # Simulate yield and price with uncertainty
-        # num_simulations = 100
-        # yields = np.random.normal(loc=ml_models["yield"].predict([[avg_rainfall, avg_temperature, soil_type_encoded, most_common_irrigation, avg_humidity, area]])[0], scale=10, size=num_simulations)
-        # prices = np.random.normal(loc=ml_models["price"].predict([[2025, location_encoded, crop_encoded, yields.mean(), season_encoded]])[0], scale=5, size=num_simulations)
-        # costs = investment * np.random.uniform(0.8, 1.2, size=num_simulations)
-
-        # profits = (yields * prices) - costs
-
-        # st.write(f"Average Profit: ₹{profits.mean():.2f}")
-        # st.write(f"Profit Range: ₹{profits.min():.2f} to ₹{profits.max():.2f}")
-
-        # fig, ax = plt.subplots()
-        # ax.hist(profits, bins=20)
-        # ax.set_title("Profit Distribution")
-        # ax.set_xlabel("Profit (₹)")
-        # ax.set_ylabel("Frequency")
-        # st.pyplot(fig)
+        
         st.subheader("🎲 Profit Simulator")
         st.write("Simulate potential profits based on different scenarios.")
 
@@ -495,8 +464,8 @@ def main():
         st.pyplot(fig)
 
     # **Community Insights Section**
-    elif selected_page == "🌐 Community Insights":
-        st.subheader("🌐 Community Insights")
+    elif selected_page == " Community Insights":
+        st.subheader("Community Insights")
         location = st.selectbox("Select Your Location", label_encoders["location"].classes_)
         location_encoded = label_encoders["location"].transform([location])[0]
 
@@ -509,8 +478,8 @@ def main():
             st.warning("No community data available for this location.")
 
     # **Climate Planner Section**
-    elif selected_page == "🌍 Climate Planner":
-        st.subheader("🌍 Climate Planner")
+    elif selected_page == "Climate Planner":
+        st.subheader("Climate Planner")
         st.write("Get recommendations for adapting to future climate conditions.")
 
         current_rainfall, future_rainfall = get_climate_trend()
